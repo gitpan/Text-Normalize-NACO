@@ -1,5 +1,9 @@
 Revision history for Perl extension Text::Normalize::NACO
 
+0.04  Tue Nov 23 08:43:31 2004
+	- fixed line ending handling in 11-normalize_suite.t (thanks to Ed Summers)
+	- added more tests (thanks to Mark Jordan)
+
 0.03  Mon Nov 22 09:33:45 2004
 	- fixed case() handling
 	- added many new test cases (thanks to Mark Jordan)
