@@ -35,8 +35,7 @@ use base qw( Exporter );
 use strict;
 use warnings;
 
-our $VERSION = '0.02';
-our $CASE    = 'upper';
+our $VERSION = '0.03';
 
 our @EXPORT_OK = qw( naco_normalize );
 
@@ -77,7 +76,7 @@ sub new {
 	my %options = @_;
 	my $self    = bless {}, $class;
 
-	$self->case( $options{ case } );
+	$self->case( $options{ case } || 'upper' );
 
 	return $self;
 }
@@ -96,11 +95,11 @@ Accessor/Mutator for the case in which the string should be returned.
 
 sub case {
 	my $self = shift;
-	my $case = @_;
+	my( $case ) = @_;
 
-	$Text::Normalize::NACO::CASE = $case if @_;
+	$self->{ _CASE } = $case if @_;
 
-	return $Text::Normalize::NACO::CASE;
+	return $self->{ _CASE };
 }
 
 =head2 naco_normalize( $text, { %options } )
@@ -115,12 +114,18 @@ options by passing a hashref after the string to be normalized.
 sub naco_normalize {
 	my $text    = shift;
 	my $options = shift;
+	my $case    = $options->{ case } || 'upper';
 
-	if( $options ) {
-		$Text::Normalize::NACO::CASE = $options->{ case };
+	my $normalized = normalize( undef, $text );
+
+	if( $case eq 'lower' ) {
+		$normalized =~ tr/A-Z/a-z/;
+	}
+	else {
+		$normalized =~ tr/a-z/A-Z/;
 	}
 
-	return normalize( undef, $text );
+	return $normalized;
 }
 
 =head2 normalize( $text )
@@ -151,11 +156,13 @@ sub normalize {
 	$data = join( '', @chars );
 
 	# Convert lowercase to uppercase or vice-versa.
-	if( $Text::Normalize::NACO::CASE eq 'lower' ) {
-		$data =~ tr/A-Z/a-z/;
-	}
-	else {
-		$data =~ tr/a-z/A-Z/;
+	if( $self ) {
+		if( $self->case eq 'lower' ) {
+			$data =~ tr/A-Z/a-z/;
+		}
+		else {
+			$data =~ tr/a-z/A-Z/;
+		}
 	}
 
 	# Remove leading and trailing spaces
