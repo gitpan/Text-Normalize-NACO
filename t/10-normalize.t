@@ -1,4 +1,4 @@
-use Test::More tests => 4;
+use Test::More tests => 6;
 
 use strict;
 use warnings;
@@ -16,4 +16,9 @@ my $original = ' abc ';
 
 is( naco_normalize( $original ), 'ABC', 'naco_normalize()' );
 is( $naco->normalize( $original ), 'ABC', 'normalize()' );
+
+$naco->case( 'lower' );
+
+is( naco_normalize( $original, { case => 'lower' } ), 'abc', 'naco_normalize()' );
+is( $naco->normalize( $original ), 'abc', 'normalize()' );
 

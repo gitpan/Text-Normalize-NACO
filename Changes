@@ -1,5 +1,9 @@
 Revision history for Perl extension Text::Normalize::NACO
 
+0.02  Wed Nov 17 14:16:32 2004
+	- added case option
+	- expanded docs
+
 0.01  Mon Nov 15 10:32:15 2004
 	- original version
 

@@ -15,6 +15,10 @@ Text::Normalize::NACO - Normalize text based on the NACO rules
 	$naco       = Text::Normalize::NACO->new;
 	$normalized = $naco->normalize( $original );
 
+	# normalize to lowercase
+	$naco->case( 'lower' );
+	$normalized = $naco->normalize( $original );
+
 =head1 DESCRIPTION
 
 In general, normalization is defined as:
@@ -31,7 +35,8 @@ use base qw( Exporter );
 use strict;
 use warnings;
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
+our $CASE    = 'upper';
 
 our @EXPORT_OK = qw( naco_normalize );
 
@@ -57,26 +62,65 @@ my ( %Latin1Code_to_fallback, %Latin1Char_to_fallback );
 
 =head1 METHODS
 
-=head2 new( )
+=head2 new( %options )
 
-Creates a new Text::Normalize::NACO object
+Creates a new Text::Normalize::NACO object. You explicitly request
+strings to be normalized in upper or lower-case by setting
+the "case" option (defaults to "upper").
+
+	my $naco = Text::Normalize::NACO->new( case => 'lower' );
 
 =cut
 
 sub new {
-	my $class = shift;
+	my $class   = shift;
+	my %options = @_;
+	my $self    = bless {}, $class;
 
-	return bless {}, $class;
+	$self->case( $options{ case } );
+
+	return $self;
 }
 
-=head2 naco_normalize( $text )
+=head2 case( $case )
 
-Exported version of C<normalize>
+Accessor/Mutator for the case in which the string should be returned.
+
+	# lower-case
+	$naco->case( 'lower' );
+
+	# upper-case
+	$naco->case( 'upper' );
+
+=cut
+
+sub case {
+	my $self = shift;
+	my $case = @_;
+
+	$Text::Normalize::NACO::CASE = $case if @_;
+
+	return $Text::Normalize::NACO::CASE;
+}
+
+=head2 naco_normalize( $text, { %options } )
+
+Exported version of C<normalize>. You can specify any extra
+options by passing a hashref after the string to be normalized.
+
+	$normalized = naco_normalize( $original, { case => 'lower' } );
 
 =cut
 
 sub naco_normalize {
-	return normalize( undef, @_ );
+	my $text    = shift;
+	my $options = shift;
+
+	if( $options ) {
+		$Text::Normalize::NACO::CASE = $options->{ case };
+	}
+
+	return normalize( undef, $text );
 }
 
 =head2 normalize( $text )
@@ -106,8 +150,13 @@ sub normalize {
 	}
 	$data = join( '', @chars );
 
-	# Convert lowercase to uppercase.
-	$data =~ tr/a-z/A-Z/;
+	# Convert lowercase to uppercase or vice-versa.
+	if( $Text::Normalize::NACO::CASE eq 'lower' ) {
+		$data =~ tr/A-Z/a-z/;
+	}
+	else {
+		$data =~ tr/a-z/A-Z/;
+	}
 
 	# Remove leading and trailing spaces
 	$data =~ s/^\s+|\s+$//g;
