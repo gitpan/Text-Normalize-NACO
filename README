@@ -26,15 +26,6 @@ DESCRIPTION
     http://www.loc.gov/catdir/pcc/naco/normrule.html
 
 INSTALLATION
-    To install this module via Module::Build:
-
-            perl Build.PL
-            ./Build         # or `perl Build`
-            ./Build test    # or `perl Build test`
-            ./Build install # or `perl Build install`
-
-    To install this module via ExtUtils::MakeMaker:
-
             perl Makefile.PL
             make
             make test
@@ -72,10 +63,10 @@ SEE ALSO
     * http://www.loc.gov/catdir/pcc/naco/normrule.html
 
 AUTHOR
-    * Brian Cassidy <bricas@cpan.org>
+    Brian Cassidy <bricas@cpan.org>
 
 COPYRIGHT AND LICENSE
-    Copyright 2006 by Brian Cassidy
+    Copyright 2007 by Brian Cassidy
 
     This library is free software; you can redistribute it and/or modify it
     under the same terms as Perl itself.
